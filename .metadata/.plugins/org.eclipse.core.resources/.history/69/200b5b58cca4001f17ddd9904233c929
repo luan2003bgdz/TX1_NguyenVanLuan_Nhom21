@@ -1,0 +1,98 @@
+package com.category;
+
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import com.basic.BasicImpl; // Kế thừa các chức năng cơ bản từ BasicImpl
+import com.object.CategoryObject; // Sử dụng đối tượng CategoryObject
+
+// Lớp thực thi các phương thức quản lý danh mục (Category)
+public class CategoryImpl extends BasicImpl implements Category {
+
+    // Constructor: Gọi constructor của lớp cha (BasicImpl) với bảng "danh_muc"
+    public CategoryImpl() {
+        super("danh_muc");
+    }
+
+    // Phương thức thêm danh mục mới
+    @Override
+    public boolean addCategory(CategoryObject item) {
+        // Câu lệnh SQL để thêm một danh mục
+        String sql = "INSERT INTO danh_muc (ten_danh_muc) VALUES (?)";
+        try {
+            // Chuẩn bị câu lệnh SQL
+            PreparedStatement pre = this.con.prepareStatement(sql);
+            pre.setString(1, item.getTen_danh_muc()); // Gán giá trị tên danh mục
+            return this.add(pre); // Gọi phương thức add từ lớp cha để thực thi
+        } catch (SQLException e) {
+            System.err.println("Error adding category: " + e.getMessage()); // Thông báo lỗi nếu xảy ra
+        }
+        return false; // Trả về false nếu có lỗi
+    }
+
+    // Phương thức chỉnh sửa danh mục
+    @Override
+    public boolean editCategory(CategoryObject item) {
+        // Câu lệnh SQL để cập nhật thông tin danh mục
+        String sql = "UPDATE danh_muc SET ten_danh_muc = ? WHERE id = ?";
+        try {
+            // Chuẩn bị câu lệnh SQL
+            PreparedStatement pre = this.con.prepareStatement(sql);
+            pre.setString(1, item.getTen_danh_muc()); // Gán giá trị tên danh mục
+            pre.setLong(2, item.getId()); // Gán giá trị ID danh mục
+            return this.edit(pre); // Gọi phương thức edit từ lớp cha để thực thi
+        } catch (SQLException e) {
+            System.err.println("Error editing category: " + e.getMessage()); // Thông báo lỗi nếu xảy ra
+        }
+        return false; // Trả về false nếu có lỗi
+    }
+
+    // Phương thức xóa danh mục
+    @Override
+    public boolean deleteCategory(CategoryObject item) {
+        // Câu lệnh SQL để xóa danh mục theo ID
+        String sql = "DELETE FROM danh_muc WHERE id = ?";
+        try {
+            // Chuẩn bị câu lệnh SQL
+            PreparedStatement pre = this.con.prepareStatement(sql);
+            pre.setLong(1, item.getId()); // Gán giá trị ID danh mục
+            return this.delete(pre); // Gọi phương thức delete từ lớp cha để thực thi
+        } catch (SQLException e) {
+            System.err.println("Error deleting category: " + e.getMessage()); // Thông báo lỗi nếu xảy ra
+        }
+        return false; // Trả về false nếu có lỗi
+    }
+
+    // Phương thức lấy danh sách danh mục với phân trang
+    @Override
+    public ArrayList<ResultSet> getCategory(CategoryObject similar, int at, byte total) {
+        StringBuilder sql = new StringBuilder(); // Sử dụng StringBuilder để tạo câu lệnh SQL
+        sql.append("SELECT * FROM danh_muc "); // Lấy tất cả danh mục
+
+        // Phân trang: Sắp xếp theo ID giảm dần và giới hạn số lượng bản ghi
+        sql.append("ORDER BY id DESC ");
+        sql.append("LIMIT ").append(at).append(", ").append(total).append("; ");
+
+        // Thêm câu lệnh đếm tổng số danh mục
+        sql.append("SELECT COUNT(id) AS total FROM danh_muc;");
+
+        return this.gets(sql.toString()); // Gọi phương thức gets từ lớp cha để thực thi
+    }
+
+    // Phương thức lấy một danh mục theo ID
+    @Override
+    public ResultSet getCategory(int id) {
+        // Câu lệnh SQL để lấy danh mục theo ID
+        String sql = "SELECT * FROM danh_muc WHERE id = ?";
+        return this.get(sql, id); // Gọi phương thức get từ lớp cha để thực thi
+    }
+
+    // Phương thức lấy danh mục theo tên người dùng và mật khẩu (chưa triển khai)
+    @Override
+    public ResultSet getCategory(String username, String userpass) {
+        // TODO: Implement logic for this method
+        return null;
+    }
+}

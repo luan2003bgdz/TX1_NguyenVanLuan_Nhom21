@@ -1,0 +1,90 @@
+package com.category;
+
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
+
+import com.basic.BasicImpl;
+import com.object.CategoryObject;
+
+public class CategoryImpl extends BasicImpl implements Category{
+	public CategoryImpl() {
+        super("danh_muc"); // Reference the 'danh_muc' table
+    }
+
+    @Override
+    public boolean addCategory(CategoryObject category) {
+        String sql = "INSERT INTO danh_muc (ten_danh_muc) VALUES (?)";
+        try {
+            PreparedStatement pre = this.con.prepareStatement(sql);
+            pre.setString(1, category.getTen_danh_muc());
+            return this.add(pre);
+        } catch (SQLException e) {
+            System.err.println("Error adding category: " + e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
+    public boolean editCategory(CategoryObject category) {
+        String sql = "UPDATE danh_muc SET ten_danh_muc = ? WHERE id = ?";
+        try {
+            PreparedStatement pre = this.con.prepareStatement(sql);
+            pre.setString(1, category.getTen_danh_muc());
+            pre.setLong(2, category.getId());
+            return this.edit(pre);
+        } catch (SQLException e) {
+            System.err.println("Error editing category: " + e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteCategory(CategoryObject category) {
+        String sql = "DELETE FROM danh_muc WHERE id = ?";
+        try {
+            PreparedStatement pre = this.con.prepareStatement(sql);
+            pre.setLong(1, category.getId());
+            return this.delete(pre);
+        } catch (SQLException e) {
+            System.err.println("Error deleting category: " + e.getMessage());
+        }
+        return false;
+    }
+
+    @Override
+    public ArrayList<CategoryObject> getCategories() {
+        String sql = "SELECT * FROM danh_muc ORDER BY id DESC";
+        ArrayList<CategoryObject> categories = new ArrayList<>();
+        try {
+            ResultSet rs = this.executeQuery(sql);
+            while (rs.next()) {
+                CategoryObject category = new CategoryObject();
+                category.setId(rs.getLong("id"));
+                category.setTen_danh_muc(rs.getString("ten_danh_muc"));
+                categories.add(category);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving categories: " + e.getMessage());
+        }
+        return categories;
+    }
+
+    @Override
+    public CategoryObject getCategoryById(long id) {
+        String sql = "SELECT * FROM danh_muc WHERE id = ?";
+        try {
+            PreparedStatement pre = this.con.prepareStatement(sql);
+            pre.setLong(1, id);
+            ResultSet rs = pre.executeQuery();
+            if (rs.next()) {
+                CategoryObject category = new CategoryObject();
+                category.setId(rs.getLong("id"));
+                category.setTen_danh_muc(rs.getString("ten_danh_muc"));
+                return category;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving category by ID: " + e.getMessage());
+        }
+        return null;
+    }
+}

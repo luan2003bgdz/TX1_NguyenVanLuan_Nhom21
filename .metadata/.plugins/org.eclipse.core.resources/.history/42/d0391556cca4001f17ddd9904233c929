@@ -1,0 +1,55 @@
+package com.object;
+
+// Lớp đại diện cho một danh mục với các thuộc tính id và tên danh mục
+public class CategoryObject {
+    
+    // Thuộc tính lưu trữ ID của danh mục
+    private long id;
+
+    // Thuộc tính lưu trữ tên của danh mục
+    private String ten_danh_muc;
+
+    // Constructor không tham số (mặc định)
+    // Dùng để tạo một đối tượng mà không cần truyền giá trị ban đầu
+    public CategoryObject() {
+        super(); // Gọi constructor của lớp cha (Object)
+    }
+
+    // Constructor có tham số
+    // Dùng để tạo đối tượng với giá trị cụ thể cho id và tên danh mục
+    public CategoryObject(long id, String ten_danh_muc) {
+        this.id = id; // Gán giá trị cho thuộc tính id
+        this.ten_danh_muc = ten_danh_muc; // Gán giá trị cho thuộc tính tên danh mục
+    }
+
+    // Getter cho thuộc tính id
+    // Trả về giá trị ID của danh mục
+    public long getId() {
+        return id;
+    }
+
+    // Setter cho thuộc tính id
+    // Gán một giá trị mới cho ID của danh mục
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    // Getter cho thuộc tính tên danh mục
+    // Trả về giá trị tên của danh mục
+    public String getTen_danh_muc() {
+        return ten_danh_muc;
+    }
+
+    // Setter cho thuộc tính tên danh mục
+    // Gán một giá trị mới cho tên danh mục
+    public void setTen_danh_muc(String ten_danh_muc) {
+        this.ten_danh_muc = ten_danh_muc;
+    }
+
+    // Ghi đè phương thức toString() từ lớp Object
+    // Trả về chuỗi mô tả đối tượng dưới dạng: CategoryObject [id=<id>, ten_danh_muc=<tên>]
+    @Override
+    public String toString() {
+        return "CategoryObject [id=" + id + ", ten_danh_muc=" + ten_danh_muc + "]";
+    }
+}

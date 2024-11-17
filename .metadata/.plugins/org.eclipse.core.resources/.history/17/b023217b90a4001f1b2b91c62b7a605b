@@ -1,0 +1,116 @@
+package run;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import com.category.CategoryImpl;
+import com.object.CategoryObject;
+
+public class CategoryRun {
+	public static void main(String[] args) {
+		CategoryImpl categoryImpl = new CategoryImpl();
+
+        // Gọi hàm hiển thị danh sách danh mục
+//        displayCategories(categoryImpl);
+
+//        // Hiển thị danh mục theo ID
+//        int categoryId = 2; // ID danh mục cần lấy
+//        displayCategoryById(categoryImpl, categoryId);
+//
+//        // Xóa danh mục theo ID
+//        CategoryObject categoryToDelete = new CategoryObject();
+//        categoryToDelete.setId(3); // ID danh mục cần xóa
+//        deleteCategoryById(categoryImpl, categoryToDelete);
+//
+        // Thêm danh mục mới
+        CategoryObject newCategory = new CategoryObject();
+        newCategory.setTen_danh_muc("MÁY TÍNH XÁCH TAY");
+
+        boolean isAdded = categoryImpl.addCategory(newCategory);
+        if (isAdded) {
+            System.out.println("Thêm danh mục mới thành công.");
+        } else {
+            System.out.println("Thêm danh mục mới thất bại.");
+        }
+
+//        // Sửa danh mục đã có
+//        CategoryObject updatedCategory = new CategoryObject();
+//        updatedCategory.setId(2); // ID của danh mục cần sửa
+//        updatedCategory.setTen_danh_muc("PC GAMING & ĐỒNG BỘ");
+//
+//        boolean isUpdated = categoryImpl.editCategory(updatedCategory);
+//        if (isUpdated) {
+//            System.out.println("Cập nhật danh mục thành công.");
+//        } else {
+//            System.out.println("Cập nhật danh mục thất bại.");
+//        }
+    }
+
+    // Hàm hiển thị danh sách danh mục
+    public static void displayCategories(CategoryImpl categoryImpl) {
+        ArrayList<ResultSet> res = categoryImpl.getCategory(null, 0, (byte) 15);
+
+        if (res != null && res.size() >= 2) {
+            // Duyệt và hiển thị danh sách danh mục
+            try (ResultSet rs = res.get(0)) {
+                System.out.println("----------------------------------------------------------------------");
+                String row;
+                while (rs.next()) {
+                    row = "ID: " + rs.getInt("id");
+                    row += "\tTÊN: " + rs.getString("ten_danh_muc");
+                    System.out.println(row);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            // Tổng số danh mục
+            try (ResultSet rs = res.get(1)) {
+                if (rs.next()) {
+                    System.out.println("----------------------------------------------------------------------");
+                    System.out.println("Tổng số danh mục: " + rs.getInt("total"));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Không tìm thấy kết quả nào.");
+        }
+    }
+
+
+    // Hàm hiển thị danh mục theo ID
+    public static void displayCategoryById(CategoryImpl categoryImpl, int id) {
+        ResultSet rs = categoryImpl.getCategory(id);
+
+        try {
+            if (rs != null && rs.next()) {
+                System.out.println("Thông tin danh mục:");
+                System.out.println("ID: " + rs.getLong("id"));
+                System.out.println("Tên danh mục: " + rs.getString("ten_danh_muc"));
+            } else {
+                System.out.println("Không tìm thấy danh mục với ID: " + id);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error displaying category: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // Hàm xóa danh mục theo ID
+    public static void deleteCategoryById(CategoryImpl categoryImpl, CategoryObject categoryToDelete) {
+        boolean isDeleted = categoryImpl.deleteCategory(categoryToDelete);
+
+        if (isDeleted) {
+            System.out.println("Danh mục với ID " + categoryToDelete.getId() + " đã được xóa thành công.");
+        } else {
+            System.out.println("Xóa danh mục thất bại hoặc danh mục không tồn tại.");
+        }
+	}
+}

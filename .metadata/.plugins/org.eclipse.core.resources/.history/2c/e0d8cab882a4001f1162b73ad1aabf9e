@@ -1,0 +1,51 @@
+package run;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import com.product.Product;
+import com.product.ProductImpl;
+
+public class TestRun {
+	public static void main(String[] args) {
+		ProductImpl productImpl = new ProductImpl();
+	    Product pr = new ProductImpl();
+	    
+	    // Danh sách người sử dụng
+	    ArrayList<ResultSet> res = pr.getProduct(null, 0, (byte) 15);
+	    
+	    if (res != null && res.size() >= 2) {
+	        // Duyệt và hiển thị danh sách người dùng
+	        try (ResultSet rs = res.get(0)) {
+	        	System.out.println("----------------------------------------------------------------------");
+	            String row;
+	            while (rs.next()) {
+	                row = "ID: " + rs.getInt("id");
+	                row += "\tTEN: " + rs.getString("ten_san_pham");
+	                row += "\tGIA: " + rs.getString("don_gia");
+	                row += "\tSOLUONGKHO: " + rs.getString("don_vi_kho");
+	                row += "\tSOLUONGBAN: " + rs.getString("don_vi_ban");
+	                row += "\tTHIETKE: " + rs.getString("thiet_ke");
+	                System.out.println(row);
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+
+	        // Tổng số người sử dụng
+	        try (ResultSet rs = res.get(1)) {
+	            if (rs.next()) {
+	            	System.out.println("----------------------------------------------------------------------");
+	                System.out.println("Tổng số sản phẩm: " + rs.getInt("total"));
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    } else {
+	        System.out.println("Không tìm thấy kết quả nào.");
+	    }
+
+	}
+
+}

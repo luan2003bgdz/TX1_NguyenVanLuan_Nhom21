@@ -1,0 +1,18 @@
+package com.category;
+
+import java.sql.ResultSet;
+import java.util.ArrayList;
+
+import com.object.CategoryObject;
+import com.object.ProductObject;
+
+public interface Category {
+	boolean addProduct(CategoryObject item);
+	boolean editProduct(CategoryObject item);
+	boolean deleteProduct(CategoryObject item);
+	
+	ArrayList<ResultSet> getProduct(CategoryObject similar, int at, byte total);
+	ResultSet getProduct(int id);
+	ResultSet getProduct(String username, String userpass);
+	ArrayList<CategoryObject> searchProductByName(String productName);
+}
